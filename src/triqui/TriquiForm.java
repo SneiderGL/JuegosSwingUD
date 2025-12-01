@@ -1,6 +1,7 @@
 package triqui;
 
 import javax.swing.*;
+import java.awt.*;
 
 public class TriquiForm {
     private JPanel panel1;
@@ -19,42 +20,58 @@ public class TriquiForm {
 
     public TriquiForm() {
 
-        // Inicializamos la matriz con los botones creados en el GUI Designer
+        // Inicializamos la matriz de botones
         board = new JButton[][]{
                 {btn00, btn01, btn02},
                 {btn10, btn11, btn12},
                 {btn20, btn21, btn22}
         };
 
-        // Listener para cada botón
+        // Fuente bonita para los botones
+        Font font = new Font("Arial", Font.BOLD, 28);
+
+        // Configuración inicial de estilo
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
 
                 JButton b = board[i][j];
 
+                b.setFont(font);
+                b.setFocusPainted(false);
+                b.setBackground(new Color(240, 240, 240)); // gris suave
+
                 b.addActionListener(e -> {
+
+                    // Colocar X o O con color
                     if (turnoX) {
                         b.setText("X");
+                        b.setForeground(Color.BLUE);
                     } else {
                         b.setText("O");
+                        b.setForeground(Color.RED);
                     }
 
-                    b.setEnabled(false); // No permitir oprimir de nuevo
+                    b.setBackground(new Color(220, 255, 220)); // verde suave
+                    b.setEnabled(false); // No permitir pulsarlo de nuevo
 
+                    // ¿Ganó alguien?
                     if (checkWinner()) {
                         String ganador = turnoX ? "X" : "O";
                         JOptionPane.showMessageDialog(panel1, "¡Ganó " + ganador + "!");
+
                         resetBoard();
                         return;
                     }
 
+                    // ¿Empate?
                     if (tableroLleno()) {
                         JOptionPane.showMessageDialog(panel1, "¡Empate!");
                         resetBoard();
                         return;
                     }
 
-                    turnoX = !turnoX; // cambiar turno
+                    // Cambiar turno
+                    turnoX = !turnoX;
                 });
             }
         }
@@ -69,7 +86,6 @@ public class TriquiForm {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
-
 
     // =============================
     //       LÓGICA DEL TRIQUI
@@ -113,8 +129,13 @@ public class TriquiForm {
     private void resetBoard() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                board[i][j].setText("");
-                board[i][j].setEnabled(true);
+
+                JButton b = board[i][j];
+
+                b.setText("");
+                b.setEnabled(true);
+                b.setBackground(new Color(240, 240, 240)); // fondo gris
+                b.setForeground(Color.BLACK);
             }
         }
         turnoX = true;
